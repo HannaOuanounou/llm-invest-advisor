@@ -15,6 +15,7 @@ import llm_analyzer
 #         click.echo('Exiting the program. Goodbye!')
    
 if __name__ == '__main__':
+    
     while True:
         print("\n=== LLM Investment Advisor ===")
         print("1. Analyser une action")
@@ -28,9 +29,17 @@ if __name__ == '__main__':
             print('Enter the ticker symbol:')
             ticker = input().strip().upper()
             # Appelle analyze_stock
-            analysis=llm_analyzer.analyze_stock(ticker)
-            # Print résultat
-            print(f'Analysis for {ticker}:\n{analysis}')
+            analysis = llm_analyzer.analyze_stock(ticker)
+            print(f"\n ANALYSE DE {ticker}:\n")
+            print(f"RÉSUMÉ: {analysis.resume}\n")
+            print("POINTS FORTS:")
+            for pf in analysis.points_forts:
+                print(f" {pf}")
+            print("\nRISQUES:")
+            for r in analysis.risques:
+                print(f" {r}")
+            print(f"\nVERDICT: {analysis.verdict.decision}")
+            print(f"Justification: {analysis.verdict.justification}")
         elif choice == "2":
             # Demande 2 tickers
             print('Enter the first ticker symbol:')
@@ -38,12 +47,29 @@ if __name__ == '__main__':
             print('Enter the second ticker symbol:')
             ticker2 = input().strip().upper()
             # Appelle analyze_stock pour chacun
-            analysis1=llm_analyzer.analyze_stock(ticker1)
-            analysis2=llm_analyzer.analyze_stock(ticker2)
-            # Print les 2 résultats
-            print(f'Analysis for {ticker1}:\n{analysis1}')
-            print(f'Analysis for {ticker2}:\n{analysis2}')
-
+            analysis1 = llm_analyzer.analyze_stock(ticker1)
+            print(f"\nANALYSE DE {ticker}:\n")
+            print(f"RÉSUMÉ: {analysis.resume}\n")
+            print("POINTS FORTS:")
+            for pf in analysis.points_forts:
+                print(f"   {pf}")
+            print("\nRISQUES:")
+            for r in analysis.risques:
+                print(f"  {r}")
+            print(f"\nVERDICT: {analysis.verdict.decision}")
+            print(f"Justification: {analysis.verdict.justification}")
+            analysis2 = llm_analyzer.analyze_stock(ticker2)
+            print(f"\n ANALYSE DE {ticker}:\n")
+            print(f"RÉSUMÉ: {analysis.resume}\n")
+            print("POINTS FORTS:")
+            for pf in analysis.points_forts:
+                print(f"   {pf}")
+            print("\nRISQUES:")
+            for r in analysis.risques:
+                print(f"   {r}")
+            print(f"\nVERDICT: {analysis.verdict.decision}")
+            print(f"Justification: {analysis.verdict.justification}")
+            
         elif choice == "3":
             # Quitte
             break
