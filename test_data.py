@@ -36,7 +36,14 @@ def getStock(ticker: str):
             "grossMargins": info.get("grossMargins", "N/A"),
             "operatingMargins": info.get("operatingMargins", "N/A"),
             "profitMargins": info.get("profitMargins", "N/A"),  
+            "earningsPerShare": info.get("trailingEps", "N/A"),
+            "PEG Ratio": info.get("pegRatio", "N/A"),
+            "trailingEps": info.get("trailingEps", "N/A"),  
+            "debtToEquity": info.get("debtToEquity", "N/A"),
+            "freeCashFlow": info.get("freeCashflow", "N/A"),
+            "freeCashFlowYield": info.get("freeCashFlowYield", "N/A"),
         }
+        #print(f"Retrieved data for {ticker}: {mydic}")
 
         return mydic
 

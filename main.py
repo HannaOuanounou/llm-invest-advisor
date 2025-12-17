@@ -104,7 +104,7 @@ if __name__ == "__main__":
             )
             print(f"Found {len(results)} stocks")
             for stock in results[:5]:  # Top 5
-                print(f"{stock['ticker']}: P/E={stock['P/E Ratio']}")
+                print(f"{stock['ticker']}: P/E={stock['P/E Ratio']}  \nUndervaluation Score={stock['Undervaluation Score']} ")
         elif choice == "4":
             break
         else:
