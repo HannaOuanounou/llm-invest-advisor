@@ -4,14 +4,13 @@ from dotenv import load_dotenv
 from groq import Groq
 from pydantic import BaseModel, ValidationError
 from typing import Literal, Optional
-
+import advanced_metrics
 import test_data
 
 # Load environment variables from .env file
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# (optionnel mais clean) : passer explicitement la clé
 client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else Groq()
 
 
@@ -31,11 +30,15 @@ def analyze_stock(ticker: str) -> Optional[StockAnalysis]:
     # 1) Stock data
     stock_data = test_data.getStock(ticker)
 
-    # 2) Si ticker invalide / API finance down / pas de données
     if stock_data is None:
         return None
+    # Enrich with advanced metrics
+    stock_data['PEG Ratio'] = advanced_metrics.calculate_peg_ratio(stock_data) or 'N/A'
+    stock_data['Price to Book'] = advanced_metrics.calculate_price_to_book(stock_data) or 'N/A'
+    stock_data['Debt to Equity'] = advanced_metrics.calculate_debt_to_equity(stock_data) or 'N/A'
+    stock_data['Free Cash Flow Yield'] = advanced_metrics.calculate_free_cash_flow_yield(stock_data) or 'N/A'
 
-    # 3) Appel Groq protégé
+    # 2) Appel Groq 
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-20b",
