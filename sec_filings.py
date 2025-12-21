@@ -84,6 +84,59 @@ def extract_key_sections(text):
     
     return sections
 
+
+from groq import Groq
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Client Groq dédié au 10-K
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+def summarize_section(item_name, item_text):
+    """
+    Résume une section du 10-K avec Groq
+    Args:
+        item_name: "1", "1A", ou "7"
+        item_text: text of the section
+    Returns:
+        str: summary in english
+    """
+    # Specific prompts by section
+    prompts = {
+        "1": "Summarize in 300 words: principal activity, key products/services, and business model.",
+        "1A": "List the 10 most critical risks (format: - Risk X: short description).",
+        "7": "Summarize in 300 words: recent financial performance, current strategy, and outlook."
+    }
+
+    prompt = prompts.get(item_name, "Summarize this section in 300 words.")
+    
+    try:
+        # Limit the text to 15k characters (avoid token limit)
+        text_chunk = item_text[:15000]
+        
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an expert financial analyst. Respond in english, be factual and concise."
+                },
+                {
+                    "role": "user",
+                    "content": f"{prompt}\n\nSECTION DU 10-K:\n{text_chunk}"
+                }
+            ],
+            temperature=0.3,
+            max_tokens=1000
+        )
+        
+        summary = response.choices[0].message.content.strip()
+        return summary
+    
+    except Exception as e:
+        print(f"Erreur Groq Item {item_name}: {e}")
+        return f"[Error during summary of section {item_name}]"
+
 if __name__ == "__main__":
     path = fetch_10k("AAPL", 1)
     if path:
@@ -105,3 +158,15 @@ if __name__ == "__main__":
     for item_num, item_text in sections.items():
         print(f"\nItem {item_num}: {len(item_text):,} characters")
         print(f"Preview: {item_text[:200]}...")
+
+    print("\n" + "="*60)
+    print("RÉSUMÉS DES SECTIONS CLÉS")
+    print("="*60)
+    
+    for item_num in ["1", "1A", "7"]:
+        if item_num in sections:
+            print(f"\n📄 Item {item_num} ({len(sections[item_num]):,} chars)")
+            print("-" * 60)
+            summary = summarize_section(item_num, sections[item_num])
+            print(summary)
+            print()
