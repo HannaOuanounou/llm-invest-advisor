@@ -136,6 +136,19 @@ def summarize_section(item_name, item_text):
     except Exception as e:
         print(f"Erreur Groq Item {item_name}: {e}")
         return f"[Error during summary of section {item_name}]"
+    
+
+    def generate_pdf(ticker, sections, summaries, output_dir="reports"):
+    """
+    Génère un PDF avec les résumés du 10-K
+    Args:
+        ticker: symbole boursier
+        sections: dict des sections brutes
+        summaries: dict des résumés {"1": "résumé...", "1A": "...", "7": "..."}
+        output_dir: dossier de sortie
+    Returns:
+        str: chemin du PDF généré
+    """
 
 if __name__ == "__main__":
     path = fetch_10k("AAPL", 1)
