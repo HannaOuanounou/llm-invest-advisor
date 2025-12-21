@@ -1,6 +1,8 @@
 from sec_edgar_downloader import Downloader
 import os
 from bs4 import BeautifulSoup
+from fpdf import FPDF
+from datetime import datetime
 
 def fetch_10k(ticker, num_filings=1):
     """
@@ -138,48 +140,74 @@ def summarize_section(item_name, item_text):
         return f"[Error during summary of section {item_name}]"
     
 
-    def generate_pdf(ticker, sections, summaries, output_dir="reports"):
-    """
-    Génère un PDF avec les résumés du 10-K
-    Args:
-        ticker: symbole boursier
-        sections: dict des sections brutes
-        summaries: dict des résumés {"1": "résumé...", "1A": "...", "7": "..."}
-        output_dir: dossier de sortie
-    Returns:
-        str: chemin du PDF généré
-    """
+def generate_pdf(ticker, summaries, output_dir="reports"):
 
-if __name__ == "__main__":
-    path = fetch_10k("AAPL", 1)
-    if path:
-        print(f"10-K downloaded to: {path}")
-        
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                print(f"  - {file}")
-    text = parse_10k(path)
-    print(f"Text extracted: {len(text)} characters")
-    print(text[:500])
+    # create report directory if not exists
+    os.makedirs(output_dir, exist_ok=True)
 
-    print("\n" + "="*60)
-    print("keys sections extracted:")
-    print("="*60)
+    # Create PDF
+    pdf = FPDF()
+    pdf.add_page()
+
+    # Title
+    pdf.set_font("Arial", "B", 20)
+    pdf.cell(0, 10, f"Analyse 10-K: {ticker}", ln=True, align="C")
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(0, 10, f"Date: {datetime.now().strftime('%d/%m/%Y')}", ln=True, align="C")
+    pdf.ln(10)
     
-    sections = extract_key_sections(text)
-    
-    for item_num, item_text in sections.items():
-        print(f"\nItem {item_num}: {len(item_text):,} characters")
-        print(f"Preview: {item_text[:200]}...")
-
-    print("\n" + "="*60)
-    print("RÉSUMÉS DES SECTIONS CLÉS")
-    print("="*60)
+    # Sections
+    sections_titles = {
+        "1": "1. PRINCIPAL ACTIVITY",
+        "1A": "2. PRINCIPAL RISKS",
+        "7": "3. FINANCIAL PERFORMANCE AND STRATEGY",
+    }
     
     for item_num in ["1", "1A", "7"]:
+        if item_num in summaries:
+            # Titre de section
+            pdf.set_font("Arial", "B", 14)
+            pdf.cell(0, 10, sections_titles[item_num], ln=True)
+            pdf.ln(2)
+            
+            # Content
+            pdf.set_font("Arial", "", 10)
+            # Encoding en latin-1 (fpdf limitation)
+            text = summaries[item_num].encode('latin-1', 'replace').decode('latin-1')
+            pdf.multi_cell(0, 5, text)
+            pdf.ln(5)
+    
+    # Document saving
+    filename = f"{ticker}_10K_Analysis_{datetime.now().strftime('%Y%m%d')}.pdf"
+    filepath = os.path.join(output_dir, filename)
+    pdf.output(filepath)
+    
+    return filepath
+    
+
+
+if __name__ == "__main__":
+    
+    ticker = "AAPL"
+    
+    print("Download 10-K...")
+    path = fetch_10k(ticker, 1)
+    
+    print(" Extract text")
+    text = parse_10k(path)
+
+    print(" Extract key sections ")
+    sections = extract_key_sections(text)
+
+    print(" Génération summaries + PDF...")
+    summaries = {}
+    for item_num in ["1", "1A", "7"]:
         if item_num in sections:
-            print(f"\n📄 Item {item_num} ({len(sections[item_num]):,} chars)")
-            print("-" * 60)
-            summary = summarize_section(item_num, sections[item_num])
-            print(summary)
-            print()
+            summaries[item_num] = summarize_section(item_num, sections[item_num])
+    
+    pdf_path = generate_pdf(ticker, summaries)
+    
+    print("\n" + "="*60)
+    print("ANALYSE over!")
+    print(f" PDF generate: {pdf_path}")
+    print("="*60)
