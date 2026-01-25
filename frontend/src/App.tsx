@@ -18,7 +18,7 @@ const theme = createTheme({
       paper: "#ffffff",   
     },
     text: {
-      primary: "#212121", // Texte sombre pour la lisibilité
+      primary: "#212121", 
     },
   },
 });
@@ -30,9 +30,9 @@ function App() {
 
   // Handle backend analysis request
   const handleAnalyze = async () => {
-    if (!ticker) return; // Don't run if no ticker
+    if (!ticker) return; 
     setLoading(true);
-    setAnalysisMessage(""); // Reset previous analysis message
+    setAnalysisMessage(""); 
 
     try {
       const response = await api.get("/10K_Analysis/", {
@@ -49,21 +49,19 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {/* Application avec fond clair */}
       <Container
         sx={{
           backgroundColor: theme.palette.background.default,
-          minHeight: "100vh", // S'assurer que la page occupe toute la hauteur de l'écran
+          minHeight: "100vh", 
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center", // Centrer verticalement
+          justifyContent: "center", 
           p: 2,
         }}
       >
         {/* SearchBar */}
         <SearchBar />
 
-        {/* Formulaire de recherche */}
         <Box sx={{ mb: 2 }}>
           <TextField
             label="Ticker"
