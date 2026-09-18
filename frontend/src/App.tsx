@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { api } from "./api/backend";
 import { Box, Button, TextField, CircularProgress, Container } from "@mui/material";
-import AnalysisResult from "../component/AnalysisResult";
+import AnalysisResult from "./components/AnalysisResult";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import SearchBar from "../component/SearchBar";
+import SearchBar from "./components/SearchBar";
 
 const theme = createTheme({
   palette: {

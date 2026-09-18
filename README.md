@@ -1,87 +1,96 @@
-#  LLM Investment Advisor
+# LLM Investment Advisor
 
-An AI-powered stock analysis assistant that provides structured investment recommendations based on real-time financial data.
+Assistant d'analyse boursière : données marché (yfinance), LLM (Groq), filings SEC 10-K, et UI React.
 
-##  Overview
+## Structure
 
-This project fetches live stock market data via yfinance and uses a Large Language Model (Groq API) to generate detailed analyses including strengths, risks, and investment verdicts.
-
-##  Features
-
-- Real-time stock data retrieval
-- AI-powered structured analysis
-- Side-by-side stock comparison
-- Clean CLI interface
-- JSON-validated responses using Pydantic
-
-##  Installation
-
-### Prerequisites
-- Python 3.9+
-- Groq API key (free tier available)
-
-### Setup
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd llm-invest-advisor
-
-# Install dependencies
-pip install yfinance groq python-dotenv pydantic
-```
-
-##  Configuration
-
-1. Create a `.env` file in the project root:
-```env
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-2. Get your free API key at: https://console.groq.com
-
-##  Usage
-
-Run the main program:
-```bash
-python main.py
-```
-
-### Menu Options
-
-1. **Analyze a stock** - Get detailed analysis for a single ticker
-2. **Compare two stocks** - Side-by-side comparison of two tickers
-3. **Quit** - Exit the program
-
-### Example
-```
-Enter the ticker symbol: AAPL
-```
-
-##  Tech Stack
-
-| Technology | Purpose |
-|-----------|---------|
-| **Python 3.9+** | Core language |
-| **yfinance** | Stock market data retrieval |
-| **Groq API** | LLM for analysis (openai/gpt-oss-20b) |
-| **Pydantic** | Data validation & structuring |
-| **python-dotenv** | Environment variable management |
-
-## Project Structure
 ```
 llm-invest-advisor/
-├── main.py              # CLI interface
-├── llm_analyzer.py      # LLM integration & analysis logic
-├── test_data.py         # Stock data retrieval
-├── .env                 # API keys (not committed)
-├── .gitignore          
+├── backend/                 # Package Python
+│   ├── app.py               # API FastAPI (10-K analysis)
+│   ├── cli.py               # Interface CLI
+│   ├── stock_data.py        # Récupération données yfinance
+│   ├── metrics.py           # Ratios / score de sous-évaluation
+│   ├── llm_analyzer.py      # Analyse LLM structurée (Pydantic)
+│   ├── screener.py          # Screener multi-tickers
+│   ├── news_analyzer.py     # Sentiment news (FinBERT)
+│   ├── sec_filings.py       # Download / parse / résumé / PDF 10-K
+│   └── requirements.txt
+├── frontend/                # App React + Vite + MUI
+│   └── src/
+│       ├── api/             # Client HTTP (axios)
+│       ├── components/      # UI (SearchBar, AnalysisResult, …)
+│       └── App.tsx
+├── .env.example
+├── .gitignore
 └── README.md
 ```
 
-##  Contributing
+## Prérequis
 
-This is a personal learning project. Feel free to fork and adapt.
+- Python 3.9+
+- Node.js 18+
+- Clé API Groq : https://console.groq.com
 
-##  License
+## Installation
+
+```bash
+# Backend
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r backend/requirements.txt
+cp .env.example .env        # puis renseigner GROQ_API_KEY
+
+# Frontend
+cd frontend
+npm install
+```
+
+## Lancer
+
+### API (FastAPI)
+
+Depuis la racine du projet :
+
+```bash
+uvicorn backend.app:app --reload --port 8000
+```
+
+- Docs interactives : http://127.0.0.1:8000/docs
+- Endpoint principal : `GET /10K_Analysis/?ticker=AAPL`
+
+### Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Ouvre http://localhost:5173 (proxy vers l'API sur le port 8000).
+
+### CLI
+
+```bash
+python -m backend.cli
+```
+
+1. Analyser un ticker  
+2. Comparer deux tickers  
+3. Screener  
+4. Quitter  
+
+## Stack
+
+| Techno | Rôle |
+|--------|------|
+| Python / FastAPI | Backend & API |
+| yfinance | Données marché |
+| Groq | LLM (analyse + résumé 10-K) |
+| Pydantic | Schémas de réponse |
+| React / Vite / MUI | Frontend |
+| sec-edgar-downloader | Filings SEC |
+| FinBERT (optionnel) | Sentiment news |
+
+## Licence
 
 MIT

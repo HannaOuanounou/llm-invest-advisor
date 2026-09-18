@@ -1,6 +1,8 @@
 import yfinance as yf
 
-def getStock(ticker: str):
+
+def get_stock(ticker: str):
+    """Fetch live market data for a ticker via yfinance."""
     try:
         ticker = ticker.strip().upper()
 
@@ -10,7 +12,7 @@ def getStock(ticker: str):
         if not info or info.get("regularMarketPrice") is None:
             return None
 
-        mydic = {
+        return {
             "ticker": ticker,
             "name": info.get("shortName", "N/A"),
             "price": info.get("regularMarketPrice", "N/A"),
@@ -35,22 +37,20 @@ def getStock(ticker: str):
             "returnOnEquity": info.get("returnOnEquity", "N/A"),
             "grossMargins": info.get("grossMargins", "N/A"),
             "operatingMargins": info.get("operatingMargins", "N/A"),
-            "profitMargins": info.get("profitMargins", "N/A"),  
+            "profitMargins": info.get("profitMargins", "N/A"),
             "earningsPerShare": info.get("trailingEps", "N/A"),
             "PEG Ratio": info.get("pegRatio", "N/A"),
-            "trailingEps": info.get("trailingEps", "N/A"),  
-            "debtToEquity": info.get("debtToEquity", "N/A"),
-            "freeCashFlow": info.get("freeCashflow", "N/A"),
+            "trailingEps": info.get("trailingEps", "N/A"),
             "freeCashFlowYield": info.get("freeCashFlowYield", "N/A"),
         }
-        #print(f"Retrieved data for {ticker}: {mydic}")
-
-        return mydic
 
     except Exception:
         return None
 
 
+# Backward-compatible alias
+getStock = get_stock
+
+
 if __name__ == "__main__":
-    print("AAPL  =>", getStock("AAPL"))
-    #print("ZZZZZ =>", getStock("ZZZZZ"))
+    print("AAPL  =>", get_stock("AAPL"))
