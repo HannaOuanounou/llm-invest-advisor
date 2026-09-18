@@ -1,0 +1,5 @@
+# Optional extras for news sentiment (FinBERT).
+# Warning: torch + transformers are large (several GB). Install only if needed.
+-r requirements.txt
+torch>=2.0.0
+transformers>=4.40.0

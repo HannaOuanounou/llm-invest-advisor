@@ -13,9 +13,10 @@ llm-invest-advisor/
 │   ├── metrics.py           # Ratios / score de sous-évaluation
 │   ├── llm_analyzer.py      # Analyse LLM structurée (Pydantic)
 │   ├── screener.py          # Screener multi-tickers
-│   ├── news_analyzer.py     # Sentiment news (FinBERT)
+│   ├── news_analyzer.py     # Sentiment news (FinBERT, optionnel)
 │   ├── sec_filings.py       # Download / parse / résumé / PDF 10-K
-│   └── requirements.txt
+│   ├── requirements.txt     # Dépendances core (léger)
+│   └── requirements-news.txt # Extras FinBERT (torch + transformers)
 ├── frontend/                # App React + Vite + MUI
 │   └── src/
 │       ├── api/             # Client HTTP (axios)
@@ -47,16 +48,21 @@ git pull origin cursor/restructure-project-c005
 pwd                                          # doit finir par .../llm-invest-advisor
 ls backend/requirements.txt                  # doit afficher le fichier (sinon mauvaise branche / mauvais dossier)
 
-# 3) Backend
+# 3) Backend (core uniquement — sans torch / transformers)
 python3 -m venv .venv
 source .venv/bin/activate                    # Windows: .venv\Scripts\activate
 pip install -r backend/requirements.txt
 cp .env.example .env                         # puis renseigner GROQ_API_KEY
 
+# Optionnel : analyseur news FinBERT (très volumineux — plusieurs Go)
+# pip install -r backend/requirements-news.txt
+
 # 4) Frontend
 cd frontend
 npm install
 ```
+
+Par défaut, installez uniquement `backend/requirements.txt`. Les extras news (`torch`, `transformers`) sont dans `backend/requirements-news.txt` et prennent beaucoup d’espace disque.
 
 Si `pip install -r backend/requirements.txt` échoue avec `No such file or directory`, vous êtes encore sur `main` (ou hors du dossier du projet) : refaire les étapes 1–2.
 

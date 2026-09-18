@@ -15,7 +15,5 @@ lxml>=5.0.0
 fpdf2>=2.7.0
 colorama>=0.4.6
 
-# News sentiment (optional / heavy)
+# News feeds (RSS) — FinBERT models are in requirements-news.txt
 feedparser>=6.0.0
-torch>=2.0.0
-transformers>=4.40.0
