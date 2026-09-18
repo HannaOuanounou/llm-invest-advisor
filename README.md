@@ -34,17 +34,31 @@ llm-invest-advisor/
 
 ## Installation
 
-```bash
-# Backend
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r backend/requirements.txt
-cp .env.example .env        # puis renseigner GROQ_API_KEY
+> **Branche requise :** `main` a encore l’ancienne arborescence (fichiers Python à la racine, **pas** de dossier `backend/`).  
+> Installez uniquement depuis `cursor/restructure-project-c005` (ou après merge de la [PR #1](https://github.com/HannaOuanounou/llm-invest-advisor/pull/1)).
 
-# Frontend
+```bash
+# 1) Se placer sur la branche restructurée
+git fetch origin
+git checkout cursor/restructure-project-c005
+git pull origin cursor/restructure-project-c005
+
+# 2) Vérifier que vous êtes à la racine du repo et que backend/ existe
+pwd                                          # doit finir par .../llm-invest-advisor
+ls backend/requirements.txt                  # doit afficher le fichier (sinon mauvaise branche / mauvais dossier)
+
+# 3) Backend
+python3 -m venv .venv
+source .venv/bin/activate                    # Windows: .venv\Scripts\activate
+pip install -r backend/requirements.txt
+cp .env.example .env                         # puis renseigner GROQ_API_KEY
+
+# 4) Frontend
 cd frontend
 npm install
 ```
+
+Si `pip install -r backend/requirements.txt` échoue avec `No such file or directory`, vous êtes encore sur `main` (ou hors du dossier du projet) : refaire les étapes 1–2.
 
 ## Lancer
 
