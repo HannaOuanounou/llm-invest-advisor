@@ -101,7 +101,7 @@ python -m backend.cli
 
 ## Déploiement (Docker)
 
-1. Crée un `.env` avec `GROQ_API_KEY=...`
+1. Crée un `.env` avec `GROQ_API_KEY=...` (optionnel : `GROQ_MODEL=openai/gpt-oss-20b`)
 2. Lance :
 
 ```bash
@@ -121,7 +121,7 @@ Variable frontend build : `VITE_API_BASE_URL` (URL publique de l’API).
 |--------|------|
 | Python / FastAPI | Backend & API |
 | yfinance | Données marché |
-| Groq | LLM (analyse + résumé 10-K) |
+| Groq | LLM (analyse + résumé 10-K ; modèle via `GROQ_MODEL`, défaut `openai/gpt-oss-20b`) |
 | Pydantic | Schémas de réponse |
 | React / Vite / MUI | Frontend |
 | sec-edgar-downloader | Filings SEC |

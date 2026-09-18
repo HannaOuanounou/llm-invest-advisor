@@ -14,6 +14,8 @@ from sec_edgar_downloader import Downloader
 load_dotenv()
 
 _GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+# Free/developer tier default after Aug 2026 Llama deprecation (see Groq docs).
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 groq_client = Groq(api_key=_GROQ_API_KEY) if _GROQ_API_KEY else None
 
 
@@ -129,7 +131,7 @@ def summarize_section(item_name, item_text):
         text_chunk = item_text[:15000]
 
         response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model=GROQ_MODEL,
             messages=[
                 {
                     "role": "system",
@@ -147,8 +149,14 @@ def summarize_section(item_name, item_text):
         return response.choices[0].message.content.strip()
 
     except Exception as e:
+        reason = str(e).strip() or type(e).__name__
+        if len(reason) > 200:
+            reason = reason[:197] + "..."
         print(f"Erreur Groq Item {item_name}: {e}")
-        return f"[Error during summary of section {item_name}]"
+        return (
+            f"[Error during summary of section {item_name}: {reason}. "
+            f"Check GROQ_API_KEY / GROQ_MODEL (current: {GROQ_MODEL})]"
+        )
 
 
 def clean_title(title):

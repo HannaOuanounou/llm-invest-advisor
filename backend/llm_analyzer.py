@@ -12,6 +12,8 @@ from backend import stock_data
 # Load environment variables from .env file
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+# Free/developer tier default after Aug 2026 Llama deprecation (see Groq docs).
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
@@ -46,7 +48,7 @@ def analyze_stock(ticker: str) -> Optional[StockAnalysis]:
 
     try:
         response = client.chat.completions.create(
-            model="openai/gpt-oss-20b",
+            model=GROQ_MODEL,
             messages=[
                 {
                     "role": "system",
