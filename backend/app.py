@@ -1,4 +1,5 @@
 from typing import Dict
+import os
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,10 +14,15 @@ from backend.sec_filings import (
 
 app = FastAPI(title="LLM Investment Advisor", version="0.1.0")
 
-# Autoriser React (localhost:5173)
-origins = [
+# CORS: local Vite + optional FRONTEND_ORIGIN for production
+_default_origins = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
+_extra = os.getenv("FRONTEND_ORIGIN", "").strip()
+origins = _default_origins + ([_extra] if _extra else [])
 
 app.add_middleware(
     CORSMiddleware,

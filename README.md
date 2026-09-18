@@ -66,7 +66,7 @@ cd frontend
 npm run dev
 ```
 
-Ouvre http://localhost:5173 (proxy vers l'API sur le port 8000).
+Ouvre http://localhost:5173 (API sur le port 8000).
 
 ### CLI
 
@@ -78,6 +78,22 @@ python -m backend.cli
 2. Comparer deux tickers  
 3. Screener  
 4. Quitter  
+
+## Déploiement (Docker)
+
+1. Crée un `.env` avec `GROQ_API_KEY=...`
+2. Lance :
+
+```bash
+docker compose up --build -d
+```
+
+- Frontend : http://localhost:8080  
+- API : http://localhost:8000  
+- Docs : http://localhost:8000/docs  
+
+Variable optionnelle : `FRONTEND_ORIGIN=https://ton-domaine` pour le CORS en prod.
+Variable frontend build : `VITE_API_BASE_URL` (URL publique de l’API).
 
 ## Stack
 
